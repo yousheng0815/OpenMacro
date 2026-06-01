@@ -16,8 +16,17 @@ function isZhTwPath(pathname: string): boolean {
   return path === "/zh-TW" || path.startsWith("/zh-TW/");
 }
 
-/** Redirect to the preferred locale route using the same rules as the app. */
+const BOT_UA =
+  /googlebot|google-inspectiontool|bingbot|yandex|baiduspider|duckduckbot|slurp|facebookexternalhit|twitterbot|linkedinbot|discordbot|applebot|semrushbot|ahrefsbot|petalbot|bytespider/i;
+
+function isCrawler(): boolean {
+  return BOT_UA.test(navigator.userAgent);
+}
+
+/** Client-side locale redirect; skipped for crawlers so each language URL stays indexable. */
 export function runLocaleRedirect(): void {
+  if (isCrawler()) return;
+
   const path = normalizePath(window.location.pathname);
   const stored = readStoredLocale();
   const preferred = stored ?? resolveLocaleFromNavigator();

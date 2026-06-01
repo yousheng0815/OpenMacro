@@ -8,6 +8,10 @@ const repoRoot = path.resolve(marketingRoot, "..");
 
 export default defineConfig({
   site: "https://macrokeep.com",
+  trailingSlash: "never",
+  build: {
+    format: "file",
+  },
   outDir: "dist",
   integrations: [sitemap()],
   publicDir: path.join(repoRoot, "public"),

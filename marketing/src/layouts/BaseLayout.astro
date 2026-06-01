@@ -1,7 +1,7 @@
 ---
 import "../styles/global.css";
 import LanguageSwitcher from "../components/LanguageSwitcher.astro";
-import LocaleAutoRedirect from "../components/LocaleAutoRedirect.astro";
+import StoredLocaleRedirect from "../components/StoredLocaleRedirect.astro";
 import type { MarketingLocale } from "../i18n/config";
 import { documentLangAttr, localizedPath } from "../i18n/config";
 import type { MarketingMessages } from "../i18n/types";
@@ -69,7 +69,7 @@ const ogLocaleAlternate = locale === "zh-TW" ? "en_US" : "zh_TW";
         <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
       ) : null
     }
-    <LocaleAutoRedirect />
+    <StoredLocaleRedirect />
   </head>
   <body>
     <header class="site-header">

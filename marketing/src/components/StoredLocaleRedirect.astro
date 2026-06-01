@@ -1,0 +1,8 @@
+<script>
+  import { persistLocale, readStoredLocale } from "@app-i18n/config";
+  import { runLocaleRedirect } from "../scripts/locale-redirect";
+
+  const stored = readStoredLocale();
+  if (stored) persistLocale(stored);
+  runLocaleRedirect();
+</script>

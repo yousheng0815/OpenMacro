@@ -38,6 +38,37 @@ export function resolveLocaleFromNavigator(
   return DEFAULT_LOCALE;
 }
 
+function readLocaleCookie(): AppLocale | null {
+  if (typeof document === "undefined") return null;
+  for (const part of document.cookie.split(";")) {
+    const eq = part.indexOf("=");
+    if (eq === -1) continue;
+    const name = part.slice(0, eq).trim();
+    if (name !== LOCALE_STORAGE_KEY) continue;
+    const value = decodeURIComponent(part.slice(eq + 1).trim());
+    if (value === "ja") return null;
+    if (isAppLocale(value)) return value;
+  }
+  return null;
+}
+
+function localeCookieDomain(): string | undefined {
+  if (typeof location === "undefined") return undefined;
+  const host = location.hostname;
+  if (host === "macrokeep.com" || host.endsWith(".macrokeep.com")) {
+    return ".macrokeep.com";
+  }
+  return undefined;
+}
+
+function writeLocaleCookie(locale: AppLocale): void {
+  if (typeof document === "undefined") return;
+  const encoded = encodeURIComponent(locale);
+  const domain = localeCookieDomain();
+  const domainAttr = domain ? `;domain=${domain}` : "";
+  document.cookie = `${LOCALE_STORAGE_KEY}=${encoded};path=/${domainAttr};max-age=31536000;SameSite=Lax`;
+}
+
 export function readStoredLocale(): AppLocale | null {
   try {
     const raw = localStorage.getItem(LOCALE_STORAGE_KEY);
@@ -49,7 +80,7 @@ export function readStoredLocale(): AppLocale | null {
   } catch {
     /* ignore */
   }
-  return null;
+  return readLocaleCookie();
 }
 
 export function persistLocale(locale: AppLocale): void {
@@ -58,6 +89,7 @@ export function persistLocale(locale: AppLocale): void {
   } catch {
     /* ignore */
   }
+  writeLocaleCookie(locale);
 }
 
 /** `Intl` / `toLocaleString` tag for the active app locale. */
