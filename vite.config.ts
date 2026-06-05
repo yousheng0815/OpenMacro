@@ -55,7 +55,9 @@ export default defineConfig(({ mode }) => {
       },
       VitePWA({
         disable: mode === "development",
+        /** No runtime SW — manifest/icons only. selfDestroying replaces legacy Workbox SWs on update. */
         injectRegister: false,
+        selfDestroying: true,
         registerType: "autoUpdate",
         includeAssets: [
           "favicon.png",

@@ -1,3 +1,14 @@
+/** Workbox precache buckets left after unregistering an old service worker. */
+export async function clearStaleWorkboxCaches(): Promise<void> {
+  if (!("caches" in window)) return;
+  const keys = await caches.keys();
+  await Promise.all(
+    keys
+      .filter((key) => key.startsWith("workbox-"))
+      .map((key) => caches.delete(key)),
+  );
+}
+
 /** True when running as an installed home-screen / standalone PWA (not a normal browser tab). */
 export function isInstalledPwa(): boolean {
   return (
